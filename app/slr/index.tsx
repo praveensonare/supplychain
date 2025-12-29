@@ -37,13 +37,7 @@ export default function SellerDashboard() {
   const availableBatteries = batteries.filter(b => b.status === 'available');
 
   return (
-    <View style={styles.container}>
-      <DashboardHeader
-        title="Seller Dashboard"
-        subtitle={`Welcome, ${user.name}`}
-      />
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Stats Cards */}
         <View style={styles.statsContainer}>
           <LinearGradient
@@ -156,8 +150,7 @@ export default function SellerDashboard() {
             </View>
           ))}
         </View>
-      </ScrollView>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -195,9 +188,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F9FAFB',
-  },
-  content: {
-    flex: 1,
   },
   statsContainer: {
     flexDirection: 'row',

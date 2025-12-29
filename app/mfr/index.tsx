@@ -32,13 +32,7 @@ export default function ManufacturerDashboard() {
   const totalInventoryValue = batteries.reduce((sum, b) => sum + (b.price * b.stock), 0);
 
   return (
-    <View style={styles.container}>
-      <DashboardHeader
-        title="Manufacturer Dashboard"
-        subtitle={`Welcome, ${user.name}`}
-      />
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Stats Cards */}
         <View style={styles.statsRow}>
           <LinearGradient
@@ -203,8 +197,7 @@ export default function ManufacturerDashboard() {
             </View>
           ))}
         </View>
-      </ScrollView>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -268,9 +261,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F9FAFB',
-  },
-  content: {
-    flex: 1,
   },
   statsRow: {
     flexDirection: 'row',
