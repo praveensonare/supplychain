@@ -11,6 +11,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { StatCard } from '@/components/StatCard';
+import { PieChartCard } from '@/components/PieChartCard';
 import { batteries, orders } from '@/utils/dummyData';
 
 export default function ManufacturerDashboard() {
@@ -36,6 +37,95 @@ export default function ManufacturerDashboard() {
   const activeProducts = batteries.filter(b => b.status !== 'out_of_stock').length;
   const pendingOrders = orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
   const totalInventoryValue = batteries.reduce((sum, b) => sum + (b.price * b.stock), 0);
+
+  // Pie Chart 1: Inventory by Status
+  const inventoryStatusData = [
+    {
+      name: 'Available',
+      value: Math.floor(totalProduction * 0.6),
+      color: '#10B981',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Maintenance',
+      value: Math.floor(totalProduction * 0.15),
+      color: '#F59E0B',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Booked',
+      value: Math.floor(totalProduction * 0.2),
+      color: '#3B82F6',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Expired',
+      value: Math.floor(totalProduction * 0.05),
+      color: '#EF4444',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+  ];
+
+  // Pie Chart 2: Inventory by Battery Type
+  const batteryTypeData = [
+    {
+      name: 'Solid State',
+      value: Math.floor(totalProduction * 0.65),
+      color: '#8B5CF6',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Flow Battery',
+      value: Math.floor(totalProduction * 0.35),
+      color: '#EC4899',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+  ];
+
+  // Pie Chart 3: Inventory by Location (India)
+  const locationData = [
+    {
+      name: 'Mumbai',
+      value: Math.floor(totalProduction * 0.35),
+      color: '#4F46E5',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Bangalore',
+      value: Math.floor(totalProduction * 0.25),
+      color: '#06B6D4',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Delhi',
+      value: Math.floor(totalProduction * 0.2),
+      color: '#F59E0B',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Chennai',
+      value: Math.floor(totalProduction * 0.12),
+      color: '#10B981',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Pune',
+      value: Math.floor(totalProduction * 0.08),
+      color: '#EF4444',
+      legendFontColor: '#374151',
+      legendFontSize: 12,
+    },
+  ];
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -65,6 +155,37 @@ export default function ManufacturerDashboard() {
             label="Inventory Value"
             colors={['#10B981', '#34D399']}
           />
+        </View>
+
+        {/* Inventory Analytics - Pie Charts */}
+        <View style={styles.chartsSection}>
+          <Text style={styles.chartsSectionTitle}>Inventory Analytics</Text>
+
+          <View style={styles.chartsGrid}>
+            {/* Pie Chart 1: Inventory Status */}
+            <View style={styles.chartCard}>
+              <PieChartCard
+                title="Inventory by Status"
+                data={inventoryStatusData}
+              />
+            </View>
+
+            {/* Pie Chart 2: Battery Types */}
+            <View style={styles.chartCard}>
+              <PieChartCard
+                title="Inventory by Battery Type"
+                data={batteryTypeData}
+              />
+            </View>
+
+            {/* Pie Chart 3: Location Distribution */}
+            <View style={styles.chartCard}>
+              <PieChartCard
+                title="Inventory by Location"
+                data={locationData}
+              />
+            </View>
+          </View>
         </View>
 
         {/* Production Inventory */}
@@ -253,6 +374,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     gap: 12,
+  },
+  chartsSection: {
+    paddingHorizontal: 20,
+    marginTop: 24,
+  },
+  chartsSectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 16,
+  },
+  chartsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 20,
+    ...Platform.select({
+      web: {
+        justifyContent: 'space-between',
+      },
+    }),
+  },
+  chartCard: {
+    flex: 1,
+    minWidth: 300,
+    ...Platform.select({
+      web: {
+        maxWidth: '48%',
+      },
+    }),
   },
   section: {
     paddingHorizontal: 20,
