@@ -91,20 +91,19 @@ export function Sidebar({ items, role }: SidebarProps) {
       <View style={styles.logoSection}>
         {!isCollapsed ? (
           <View style={styles.logoContainer}>
-            <Image
-              source={{ uri: 'https://via.placeholder.com/48x48/4F46E5/FFFFFF?text=Logo' }}
-              style={styles.logoImage}
-            />
+            <View style={styles.logoImageContainer}>
+              <Ionicons name="business" size={24} color="#fff" />
+            </View>
             <View style={styles.logoTextContainer}>
               <Text style={styles.companyName}>{user?.company}</Text>
+              <Text style={styles.companyTagline}>Supply Chain</Text>
             </View>
           </View>
         ) : (
           <View style={styles.logoContainerCollapsed}>
-            <Image
-              source={{ uri: 'https://via.placeholder.com/40x40/4F46E5/FFFFFF?text=L' }}
-              style={styles.logoImageCollapsed}
-            />
+            <View style={styles.logoImageContainerSmall}>
+              <Ionicons name="business" size={20} color="#fff" />
+            </View>
           </View>
         )}
         {IS_MOBILE && !isCollapsed && (
@@ -397,10 +396,49 @@ const styles = StyleSheet.create({
     gap: 12,
     flex: 1,
   },
-  logoImage: {
+  logoImageContainer: {
     width: 48,
     height: 48,
     borderRadius: 12,
+    backgroundColor: '#4F46E5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#4F46E5',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+      web: {
+        boxShadow: '0 2px 8px rgba(79, 70, 229, 0.3)',
+      },
+    }),
+  },
+  logoImageContainerSmall: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: '#4F46E5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#4F46E5',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+      web: {
+        boxShadow: '0 2px 8px rgba(79, 70, 229, 0.3)',
+      },
+    }),
   },
   logoTextContainer: {
     flex: 1,
@@ -409,11 +447,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logoImageCollapsed: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-  },
 
   // Company Name
   companyName: {
@@ -421,6 +454,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1F2937',
     letterSpacing: -0.3,
+  },
+  companyTagline: {
+    fontSize: 11,
+    color: '#6B7280',
+    marginTop: 2,
   },
 
   // Collapse Toggle Button
