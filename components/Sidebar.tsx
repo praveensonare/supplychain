@@ -111,25 +111,23 @@ export function Sidebar({ items, role }: SidebarProps) {
             <Ionicons name="close" size={24} color="#6B7280" />
           </TouchableOpacity>
         )}
+        {/* Collapse Toggle Button - Desktop Only - Inline with logo */}
+        {!IS_MOBILE && (
+          <TouchableOpacity
+            style={styles.collapseToggle}
+            onPress={() => setIsCollapsed(!isCollapsed)}
+          >
+            <Ionicons
+              name={isCollapsed ? 'chevron-forward' : 'chevron-back'}
+              size={20}
+              color="#6B7280"
+            />
+          </TouchableOpacity>
+        )}
       </View>
-
-      {/* Collapse Toggle Button - Desktop Only */}
-      {!IS_MOBILE && (
-        <TouchableOpacity
-          style={styles.collapseToggle}
-          onPress={() => setIsCollapsed(!isCollapsed)}
-        >
-          <Ionicons
-            name={isCollapsed ? 'chevron-forward' : 'chevron-back'}
-            size={20}
-            color="#6B7280"
-          />
-        </TouchableOpacity>
-      )}
 
       {/* Navigation Items */}
       <View style={styles.navigationSection}>
-        {!isCollapsed && <Text style={styles.navigationLabel}>Navigation</Text>}
         <View style={styles.navItems}>
           {items.map((item) => {
             const active = isActive(item.path);
@@ -386,7 +384,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingVertical: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
   },
@@ -394,7 +392,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    flex: 1,
   },
   logoImageContainer: {
     width: 48,
@@ -463,10 +460,6 @@ const styles = StyleSheet.create({
 
   // Collapse Toggle Button
   collapseToggle: {
-    alignSelf: 'flex-end',
-    marginRight: 12,
-    marginTop: 8,
-    marginBottom: 8,
     padding: 8,
     borderRadius: 6,
     ...Platform.select({
