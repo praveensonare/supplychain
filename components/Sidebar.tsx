@@ -117,11 +117,13 @@ export function Sidebar({ items, role }: SidebarProps) {
             style={styles.collapseToggle}
             onPress={() => setIsCollapsed(!isCollapsed)}
           >
-            <Ionicons
-              name={isCollapsed ? 'chevron-forward' : 'chevron-back'}
-              size={20}
-              color="#6B7280"
-            />
+            <View style={styles.collapseToggleCircle}>
+              <Ionicons
+                name={isCollapsed ? 'chevron-forward' : 'chevron-back'}
+                size={16}
+                color="#4F46E5"
+              />
+            </View>
           </TouchableOpacity>
         )}
       </View>
@@ -460,12 +462,24 @@ const styles = StyleSheet.create({
 
   // Collapse Toggle Button
   collapseToggle: {
-    padding: 8,
-    borderRadius: 6,
     ...Platform.select({
       web: {
         cursor: 'pointer',
-        transition: 'background-color 0.2s ease',
+      },
+    }),
+  },
+  collapseToggleCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#F3F4F6',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      web: {
+        transition: 'all 0.2s ease',
       },
     }),
   },
