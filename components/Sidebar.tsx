@@ -111,22 +111,23 @@ export function Sidebar({ items, role }: SidebarProps) {
             <Ionicons name="close" size={24} color="#6B7280" />
           </TouchableOpacity>
         )}
-        {/* Collapse Toggle Button - Desktop Only - Inline with logo */}
-        {!IS_MOBILE && (
-          <TouchableOpacity
-            style={styles.collapseToggle}
-            onPress={() => setIsCollapsed(!isCollapsed)}
-          >
-            <View style={styles.collapseToggleCircle}>
-              <Ionicons
-                name={isCollapsed ? 'chevron-forward' : 'chevron-back'}
-                size={16}
-                color="#4F46E5"
-              />
-            </View>
-          </TouchableOpacity>
-        )}
       </View>
+
+      {/* Collapse Toggle Button - Desktop Only - Fixed on right edge */}
+      {!IS_MOBILE && (
+        <TouchableOpacity
+          style={styles.collapseToggle}
+          onPress={() => setIsCollapsed(!isCollapsed)}
+        >
+          <View style={styles.collapseToggleCircle}>
+            <Ionicons
+              name={isCollapsed ? 'chevron-forward' : 'chevron-back'}
+              size={16}
+              color="#4F46E5"
+            />
+          </View>
+        </TouchableOpacity>
+      )}
 
       {/* Navigation Items */}
       <View style={styles.navigationSection}>
@@ -378,6 +379,7 @@ const styles = StyleSheet.create({
   sidebarContent: {
     flex: 1,
     flexDirection: 'column',
+    position: 'relative',
   },
 
   // Logo Section
@@ -462,6 +464,10 @@ const styles = StyleSheet.create({
 
   // Collapse Toggle Button
   collapseToggle: {
+    position: 'absolute',
+    top: 20,
+    right: -16,
+    zIndex: 100,
     ...Platform.select({
       web: {
         cursor: 'pointer',
@@ -472,13 +478,23 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
       web: {
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
         transition: 'all 0.2s ease',
       },
     }),
