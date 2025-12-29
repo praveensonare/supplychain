@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+
 import { orders, batteries } from '@/utils/dummyData';
 
 export default function ManufacturerRevenue() {
