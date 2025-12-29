@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -16,12 +16,19 @@ import { batteries, orders } from '@/utils/dummyData';
 export default function SellerDashboard() {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'seller') {
-      router.replace('/');
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && (!isAuthenticated || user?.role !== 'seller')) {
+      setTimeout(() => {
+        router.replace('/');
+      }, 0);
     }
-  }, [isAuthenticated, user, router]);
+  }, [isMounted, isAuthenticated, user, router]);
 
   if (!user) return null;
 
