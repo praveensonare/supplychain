@@ -362,13 +362,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
-    paddingBottom: 20,
-    paddingHorizontal: 20,
+    alignItems: 'flex-start',
+    paddingBottom: 80,
+    paddingLeft: 20,
     ...Platform.select({
       web: {
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         alignItems: 'flex-start',
-        paddingLeft: 260,
+        paddingBottom: 80,
+        paddingLeft: 20,
       },
     }),
   },
@@ -377,6 +379,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     minWidth: 280,
+    maxWidth: 320,
+    marginLeft: 0,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -386,6 +390,9 @@ const styles = StyleSheet.create({
       },
       android: {
         elevation: 8,
+      },
+      web: {
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
       },
     }),
   },
