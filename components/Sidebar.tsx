@@ -181,7 +181,7 @@ export function Sidebar({ items, role }: SidebarProps) {
         >
           <Image
             source={{ uri: user?.profilePicture }}
-            style={styles.profileImage}
+            style={styles.profileImage as any}
           />
           {!isCollapsed && (
             <>
@@ -247,7 +247,7 @@ export function Sidebar({ items, role }: SidebarProps) {
             <View style={styles.profileMenuHeader}>
               <Image
                 source={{ uri: user?.profilePicture }}
-                style={styles.profileMenuImage}
+                style={styles.profileMenuImage as any}
               />
               <View style={styles.profileMenuInfo}>
                 <Text style={styles.profileMenuName}>{user?.name}</Text>
@@ -364,10 +364,10 @@ const styles = StyleSheet.create({
       web: {
         position: 'sticky' as any,
         top: 0,
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'width 0.3s ease',
+        height: '100vh' as any,
+        display: 'flex' as any,
+        flexDirection: 'column' as any,
+        transition: 'width 0.3s ease' as any,
       },
     }),
   },
