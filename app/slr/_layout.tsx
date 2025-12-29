@@ -2,52 +2,60 @@ import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import { Stack, usePathname } from 'expo-router';
 import { Sidebar, SidebarItem } from '@/components/Sidebar';
-import { DashboardHeader } from '@/components/DashboardHeader';
-import { useAuth } from '@/contexts/AuthContext';
 
 const sidebarItems: SidebarItem[] = [
-  { id: 'home', label: 'Home', icon: 'home', path: '/slr' },
-  { id: 'inventory', label: 'Inventory', icon: 'cube', path: '/slr/inv' },
-  { id: 'orders', label: 'Orders', icon: 'receipt', path: '/slr/orders' },
-  { id: 'revenue', label: 'Revenue', icon: 'cash', path: '/slr/revenue' },
+  {
+    id: 'home',
+    label: 'Home',
+    icon: 'home',
+    path: '/slr',
+    description: 'Dashboard overview'
+  },
+  {
+    id: 'inventory',
+    label: 'Inventory',
+    icon: 'cube',
+    path: '/slr/inv',
+    description: 'Manage stock levels'
+  },
+  {
+    id: 'orders',
+    label: 'Orders',
+    icon: 'receipt',
+    path: '/slr/orders',
+    description: 'Source & received orders'
+  },
+  {
+    id: 'revenue',
+    label: 'Revenue',
+    icon: 'cash',
+    path: '/slr/revenue',
+    description: 'View analytics'
+  },
 ];
 
 export default function SellerLayout() {
   const pathname = usePathname();
-  const { user } = useAuth();
 
   // Don't show sidebar on profile page
   const showSidebar = pathname !== '/slr/profile';
 
-  const getPageTitle = () => {
-    if (pathname === '/slr') return 'Dashboard';
-    if (pathname === '/slr/inv') return 'Inventory Management';
-    if (pathname === '/slr/orders') return 'Orders';
-    if (pathname === '/slr/revenue') return 'Revenue & Analytics';
-    if (pathname === '/slr/profile') return 'Profile';
-    return 'Dashboard';
-  };
-
   return (
     <View style={styles.container}>
-      {showSidebar && (
-        <>
-          <DashboardHeader title={getPageTitle()} />
-          <View style={styles.content}>
-            <Sidebar items={sidebarItems} role="seller" />
-            <View style={styles.main}>
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="index" />
-                <Stack.Screen name="inv" />
-                <Stack.Screen name="orders" />
-                <Stack.Screen name="revenue" />
-                <Stack.Screen name="profile" />
-              </Stack>
-            </View>
+      {showSidebar ? (
+        <View style={styles.content}>
+          <Sidebar items={sidebarItems} role="seller" />
+          <View style={styles.main}>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="inv" />
+              <Stack.Screen name="orders" />
+              <Stack.Screen name="revenue" />
+              <Stack.Screen name="profile" />
+            </Stack>
           </View>
-        </>
-      )}
-      {!showSidebar && (
+        </View>
+      ) : (
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="inv" />
