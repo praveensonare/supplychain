@@ -9,7 +9,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { StatCard } from '@/components/StatCard';
 import { batteries } from '@/utils/dummyData';
 
 export default function ManufacturerInventory() {
@@ -29,49 +29,30 @@ export default function ManufacturerInventory() {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header Stats */}
       <View style={styles.statsContainer}>
-        <LinearGradient
+        <StatCard
+          icon="cube"
+          value={totalStock}
+          label="Total Units"
           colors={['#4F46E5', '#6366F1']}
-          style={styles.statCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="cube" size={24} color="#fff" />
-          <Text style={styles.statValue}>{totalStock}</Text>
-          <Text style={styles.statLabel}>Total Units</Text>
-        </LinearGradient>
-
-        <LinearGradient
+        />
+        <StatCard
+          icon="warning"
+          value={lowStockItems}
+          label="Low Stock"
           colors={['#F59E0B', '#FBBF24']}
-          style={styles.statCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="warning" size={24} color="#fff" />
-          <Text style={styles.statValue}>{lowStockItems}</Text>
-          <Text style={styles.statLabel}>Low Stock</Text>
-        </LinearGradient>
-
-        <LinearGradient
+        />
+        <StatCard
+          icon="close-circle"
+          value={outOfStockItems}
+          label="Out of Stock"
           colors={['#EF4444', '#F87171']}
-          style={styles.statCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="close-circle" size={24} color="#fff" />
-          <Text style={styles.statValue}>{outOfStockItems}</Text>
-          <Text style={styles.statLabel}>Out of Stock</Text>
-        </LinearGradient>
-
-        <LinearGradient
+        />
+        <StatCard
+          icon="cash"
+          value={`$${(totalValue / 1000).toFixed(0)}K`}
+          label="Total Value"
           colors={['#10B981', '#34D399']}
-          style={styles.statCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="cash" size={24} color="#fff" />
-          <Text style={styles.statValue}>${(totalValue / 1000).toFixed(0)}K</Text>
-          <Text style={styles.statLabel}>Total Value</Text>
-        </LinearGradient>
+        />
       </View>
 
       {/* Search Bar */}

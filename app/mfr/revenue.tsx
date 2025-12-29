@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { StatCard } from '@/components/StatCard';
 import { orders, batteries } from '@/utils/dummyData';
 
 export default function ManufacturerRevenue() {
@@ -42,51 +43,30 @@ export default function ManufacturerRevenue() {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Revenue Summary */}
       <View style={styles.statsContainer}>
-        <LinearGradient
+        <StatCard
+          icon="trending-up"
+          value={`$${totalRevenue.toLocaleString()}`}
+          label="Total Revenue"
           colors={['#10B981', '#34D399']}
-          style={[styles.statCard, styles.statCardLarge]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="trending-up" size={32} color="#fff" />
-          <Text style={styles.statValueLarge}>${totalRevenue.toLocaleString()}</Text>
-          <Text style={styles.statLabel}>Total Revenue</Text>
-        </LinearGradient>
-
-        <View style={styles.statsRow}>
-          <LinearGradient
-            colors={['#4F46E5', '#6366F1']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="checkmark-circle" size={24} color="#fff" />
-            <Text style={styles.statValue}>{paidOrders}</Text>
-            <Text style={styles.statLabel}>Paid Orders</Text>
-          </LinearGradient>
-
-          <LinearGradient
-            colors={['#F59E0B', '#FBBF24']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="time" size={24} color="#fff" />
-            <Text style={styles.statValue}>{pendingPayments}</Text>
-            <Text style={styles.statLabel}>Pending</Text>
-          </LinearGradient>
-
-          <LinearGradient
-            colors={['#8B5CF6', '#A78BFA']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="receipt" size={24} color="#fff" />
-            <Text style={styles.statValue}>{totalOrders}</Text>
-            <Text style={styles.statLabel}>Total Orders</Text>
-          </LinearGradient>
-        </View>
+        />
+        <StatCard
+          icon="checkmark-circle"
+          value={paidOrders}
+          label="Paid Orders"
+          colors={['#4F46E5', '#6366F1']}
+        />
+        <StatCard
+          icon="time"
+          value={pendingPayments}
+          label="Pending"
+          colors={['#F59E0B', '#FBBF24']}
+        />
+        <StatCard
+          icon="receipt"
+          value={totalOrders}
+          label="Total Orders"
+          colors={['#8B5CF6', '#A78BFA']}
+        />
       </View>
 
       {/* Period Selector */}

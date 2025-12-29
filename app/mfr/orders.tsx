@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { StatCard } from '@/components/StatCard';
 import { orders } from '@/utils/dummyData';
 
 export default function ManufacturerOrders() {
@@ -33,49 +33,30 @@ export default function ManufacturerOrders() {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Summary Stats */}
       <View style={styles.statsContainer}>
-        <LinearGradient
+        <StatCard
+          icon="mail"
+          value={receivedOrders}
+          label="Received"
           colors={['#4F46E5', '#6366F1']}
-          style={styles.statCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="mail" size={24} color="#fff" />
-          <Text style={styles.statValue}>{receivedOrders}</Text>
-          <Text style={styles.statLabel}>Received</Text>
-        </LinearGradient>
-
-        <LinearGradient
+        />
+        <StatCard
+          icon="checkmark-circle"
+          value={acceptedOrders}
+          label="Accepted"
           colors={['#10B981', '#34D399']}
-          style={styles.statCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="checkmark-circle" size={24} color="#fff" />
-          <Text style={styles.statValue}>{acceptedOrders}</Text>
-          <Text style={styles.statLabel}>Accepted</Text>
-        </LinearGradient>
-
-        <LinearGradient
+        />
+        <StatCard
+          icon="car"
+          value={inTransitOrders}
+          label="In Transit"
           colors={['#8B5CF6', '#A78BFA']}
-          style={styles.statCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="car" size={24} color="#fff" />
-          <Text style={styles.statValue}>{inTransitOrders}</Text>
-          <Text style={styles.statLabel}>In Transit</Text>
-        </LinearGradient>
-
-        <LinearGradient
+        />
+        <StatCard
+          icon="information-circle"
+          value={needsInfoOrders}
+          label="More Info"
           colors={['#F59E0B', '#FBBF24']}
-          style={styles.statCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name="information-circle" size={24} color="#fff" />
-          <Text style={styles.statValue}>{needsInfoOrders}</Text>
-          <Text style={styles.statLabel}>More Info</Text>
-        </LinearGradient>
+        />
       </View>
 
       {/* Filter Tabs */}
