@@ -6,14 +6,27 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Modal,
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StatCard } from '@/components/StatCard';
 import { batteries } from '@/utils/dummyData';
 
+interface Battery {
+  id: string;
+  name: string;
+  type: string;
+  capacity: string;
+  voltage: string;
+  price: number;
+  stock: number;
+  status: string;
+}
+
 export default function ManufacturerInventory() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedBattery, setSelectedBattery] = useState<Battery | null>(null);
 
   const totalStock = batteries.reduce((sum, b) => sum + b.stock, 0);
   const lowStockItems = batteries.filter(b => b.status === 'low_stock').length;
@@ -68,76 +81,226 @@ export default function ManufacturerInventory() {
       </View>
 
       {/* Inventory List */}
-      <View style={styles.inventoryList}>
-        <Text style={styles.sectionTitle}>Inventory Items</Text>
+      <View style={styles.listContainer}>
+        <View style={styles.listHeader}>
+          <Text style={styles.listTitle}>Inventory Items ({filteredBatteries.length})</Text>
+        </View>
+
+        {/* Table Header */}
+        <View style={styles.tableHeader}>
+          <Text style={[styles.tableHeaderText, styles.col1]}>Product</Text>
+          <Text style={[styles.tableHeaderText, styles.col2]}>Stock</Text>
+          <Text style={[styles.tableHeaderText, styles.col3]}>Status</Text>
+          <Text style={[styles.tableHeaderText, styles.col4]}>Price</Text>
+          <Text style={[styles.tableHeaderText, styles.col5]}>Actions</Text>
+        </View>
+
+        {/* Table Body */}
         {filteredBatteries.map((battery) => (
-          <View key={battery.id} style={styles.inventoryCard}>
-            <View style={styles.inventoryHeader}>
-              <View style={styles.batteryIcon}>
-                <Ionicons name="battery-charging" size={28} color="#4F46E5" />
+          <TouchableOpacity
+            key={battery.id}
+            style={styles.listItem}
+            onPress={() => setSelectedBattery(battery)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.col1}>
+              <View style={styles.productIconSmall}>
+                <Ionicons name="battery-charging" size={20} color="#4F46E5" />
               </View>
-              <View style={styles.inventoryInfo}>
-                <Text style={styles.inventoryName}>{battery.name}</Text>
-                <Text style={styles.inventoryType}>{battery.type}</Text>
-                <View style={styles.inventorySpecs}>
-                  <View style={styles.specChip}>
-                    <Ionicons name="flash" size={12} color="#6B7280" />
-                    <Text style={styles.specText}>{battery.capacity}</Text>
-                  </View>
-                  <View style={styles.specChip}>
-                    <Ionicons name="speedometer" size={12} color="#6B7280" />
-                    <Text style={styles.specText}>{battery.voltage}</Text>
-                  </View>
-                </View>
+              <View style={styles.productInfo}>
+                <Text style={styles.productName}>{battery.name}</Text>
+                <Text style={styles.productType}>{battery.type}</Text>
               </View>
             </View>
 
-            <View style={styles.inventoryDetails}>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Stock Level</Text>
-                <View style={styles.stockContainer}>
-                  <Text style={[styles.stockValue, getStockColor(battery.status)]}>
-                    {battery.stock} units
-                  </Text>
-                  <View style={[styles.statusDot, getStatusDotColor(battery.status)]} />
-                </View>
-              </View>
+            <View style={styles.col2}>
+              <Text style={styles.stockText}>{battery.stock}</Text>
+              <Text style={styles.stockLabel}>units</Text>
+            </View>
 
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Location</Text>
-                <Text style={styles.detailValue}>Warehouse A - Section {battery.id.slice(-1)}</Text>
-              </View>
-
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Unit Price</Text>
-                <Text style={styles.detailValue}>${battery.price}</Text>
-              </View>
-
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Total Value</Text>
-                <Text style={styles.detailValueHighlight}>
-                  ${(battery.price * battery.stock).toLocaleString()}
+            <View style={styles.col3}>
+              <View style={[styles.statusBadge, getStatusBadgeStyle(battery.status)]}>
+                <View style={[styles.statusDot, getStatusDotColor(battery.status)]} />
+                <Text style={[styles.statusText, getStatusTextStyle(battery.status)]}>
+                  {getStatusLabel(battery.status)}
                 </Text>
               </View>
-
-              <View style={styles.productActions}>
-                <TouchableOpacity style={styles.actionButton}>
-                  <Ionicons name="add-circle-outline" size={18} color="#4F46E5" />
-                  <Text style={styles.actionButtonText}>Restock</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, styles.actionButtonSecondary]}>
-                  <Ionicons name="create-outline" size={18} color="#6B7280" />
-                  <Text style={[styles.actionButtonText, styles.actionButtonTextSecondary]}>
-                    Edit
-                  </Text>
-                </TouchableOpacity>
-              </View>
             </View>
-          </View>
+
+            <View style={styles.col4}>
+              <Text style={styles.priceText}>${battery.price}</Text>
+            </View>
+
+            <View style={styles.col5}>
+              <TouchableOpacity
+                style={styles.detailsButton}
+                onPress={() => setSelectedBattery(battery)}
+              >
+                <Ionicons name="information-circle-outline" size={18} color="#4F46E5" />
+                <Text style={styles.detailsButtonText}>Details</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         ))}
       </View>
+
+      {/* Detail Modal */}
+      <Modal
+        visible={selectedBattery !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSelectedBattery(null)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setSelectedBattery(null)}
+        >
+          <View style={styles.modalContainer}>
+            <TouchableOpacity
+              style={styles.modalContent}
+              activeOpacity={1}
+              onPress={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <View style={styles.modalHeader}>
+                <View style={styles.modalHeaderLeft}>
+                  <View style={styles.modalIcon}>
+                    <Ionicons name="battery-charging" size={28} color="#4F46E5" />
+                  </View>
+                  <View>
+                    <Text style={styles.modalTitle}>{selectedBattery?.name}</Text>
+                    <Text style={styles.modalSubtitle}>{selectedBattery?.type}</Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setSelectedBattery(null)}
+                  style={styles.closeButton}
+                >
+                  <Ionicons name="close" size={24} color="#6B7280" />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.modalDivider} />
+
+              {/* Modal Body */}
+              <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
+                <View style={styles.detailSection}>
+                  <Text style={styles.sectionTitle}>Product Information</Text>
+                  <View style={styles.detailGrid}>
+                    <View style={styles.detailItem}>
+                      <Text style={styles.detailLabel}>Capacity</Text>
+                      <Text style={styles.detailValue}>{selectedBattery?.capacity}</Text>
+                    </View>
+                    <View style={styles.detailItem}>
+                      <Text style={styles.detailLabel}>Voltage</Text>
+                      <Text style={styles.detailValue}>{selectedBattery?.voltage}</Text>
+                    </View>
+                    <View style={styles.detailItem}>
+                      <Text style={styles.detailLabel}>Unit Price</Text>
+                      <Text style={styles.detailValue}>${selectedBattery?.price}</Text>
+                    </View>
+                    <View style={styles.detailItem}>
+                      <Text style={styles.detailLabel}>Stock Level</Text>
+                      <Text style={[styles.detailValue, getStockColor(selectedBattery?.status || '')]}>
+                        {selectedBattery?.stock} units
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={styles.detailSection}>
+                  <Text style={styles.sectionTitle}>Storage Information</Text>
+                  <View style={styles.detailGrid}>
+                    <View style={styles.detailItem}>
+                      <Text style={styles.detailLabel}>Location</Text>
+                      <Text style={styles.detailValue}>Warehouse A - Section {selectedBattery?.id.slice(-1)}</Text>
+                    </View>
+                    <View style={styles.detailItem}>
+                      <Text style={styles.detailLabel}>Status</Text>
+                      <View style={[styles.statusBadge, getStatusBadgeStyle(selectedBattery?.status || '')]}>
+                        <View style={[styles.statusDot, getStatusDotColor(selectedBattery?.status || '')]} />
+                        <Text style={[styles.statusText, getStatusTextStyle(selectedBattery?.status || '')]}>
+                          {getStatusLabel(selectedBattery?.status || '')}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={styles.detailSection}>
+                  <Text style={styles.sectionTitle}>Financial Summary</Text>
+                  <View style={styles.financialCard}>
+                    <View style={styles.financialRow}>
+                      <Text style={styles.financialLabel}>Total Inventory Value</Text>
+                      <Text style={styles.financialValue}>
+                        ${((selectedBattery?.price || 0) * (selectedBattery?.stock || 0)).toLocaleString()}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </ScrollView>
+
+              {/* Modal Footer - Actions */}
+              <View style={styles.modalFooter}>
+                <TouchableOpacity style={styles.actionButtonPrimary}>
+                  <Ionicons name="add-circle-outline" size={20} color="#fff" />
+                  <Text style={styles.actionButtonPrimaryText}>Restock</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionButtonSecondary}>
+                  <Ionicons name="create-outline" size={20} color="#4F46E5" />
+                  <Text style={styles.actionButtonSecondaryText}>Edit Details</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionButtonSecondary}>
+                  <Ionicons name="trash-outline" size={20} color="#EF4444" />
+                  <Text style={[styles.actionButtonSecondaryText, { color: '#EF4444' }]}>Remove</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </ScrollView>
   );
+}
+
+function getStatusLabel(status: string) {
+  switch (status) {
+    case 'available':
+      return 'In Stock';
+    case 'low_stock':
+      return 'Low Stock';
+    case 'out_of_stock':
+      return 'Out of Stock';
+    default:
+      return status;
+  }
+}
+
+function getStatusBadgeStyle(status: string) {
+  switch (status) {
+    case 'available':
+      return { backgroundColor: '#D1FAE5' };
+    case 'low_stock':
+      return { backgroundColor: '#FEF3C7' };
+    case 'out_of_stock':
+      return { backgroundColor: '#FEE2E2' };
+    default:
+      return { backgroundColor: '#F3F4F6' };
+  }
+}
+
+function getStatusTextStyle(status: string) {
+  switch (status) {
+    case 'available':
+      return { color: '#065F46' };
+    case 'low_stock':
+      return { color: '#92400E' };
+    case 'out_of_stock':
+      return { color: '#991B1B' };
+    default:
+      return { color: '#374151' };
+  }
 }
 
 function getStockColor(status: string) {
@@ -177,35 +340,6 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 12,
   },
-  statCard: {
-    flex: 1,
-    minWidth: 150,
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginTop: 8,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginTop: 4,
-  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -224,132 +358,301 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1F2937',
   },
-  inventoryList: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1F2937',
-    marginBottom: 16,
-  },
-  inventoryCard: {
+  listContainer: {
+    marginHorizontal: 20,
+    marginBottom: 20,
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
     borderWidth: 1,
     borderColor: '#E5E7EB',
+    overflow: 'hidden',
   },
-  inventoryHeader: {
+  listHeader: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  listTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  tableHeader: {
     flexDirection: 'row',
-    marginBottom: 16,
-    paddingBottom: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: '#F9FAFB',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  tableHeaderText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+    textTransform: 'uppercase',
+  },
+  listItem: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
+    alignItems: 'center',
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+        transition: 'background-color 0.2s ease',
+      },
+    }),
   },
-  batteryIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+  col1: {
+    flex: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  col2: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  col3: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  col4: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  col5: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  productIconSmall: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
     backgroundColor: '#F5F3FF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
   },
-  inventoryInfo: {
+  productInfo: {
     flex: 1,
   },
-  inventoryName: {
+  productName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 2,
+  },
+  productType: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  stockText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#1F2937',
-    marginBottom: 4,
   },
-  inventoryType: {
-    fontSize: 13,
-    color: '#6B7280',
-    marginBottom: 8,
+  stockLabel: {
+    fontSize: 11,
+    color: '#9CA3AF',
   },
-  inventorySpecs: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  specChip: {
+  statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F9FAFB',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    gap: 6,
   },
-  specText: {
-    fontSize: 11,
-    color: '#6B7280',
-    fontWeight: '500',
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
-  inventoryDetails: {
-    gap: 12,
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
-  detailRow: {
+  priceText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#4F46E5',
+  },
+  detailsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#EEF2FF',
+    borderRadius: 8,
+  },
+  detailsButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#4F46E5',
+  },
+
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '90%',
+    maxWidth: 600,
+    maxHeight: '85%',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 16,
+      },
+      android: {
+        elevation: 16,
+      },
+      web: {
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+      },
+    }),
+  },
+  modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 24,
+  },
+  modalHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    flex: 1,
+  },
+  modalIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    backgroundColor: '#EEF2FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  closeButton: {
+    padding: 8,
+  },
+  modalDivider: {
+    height: 1,
+    backgroundColor: '#E5E7EB',
+  },
+  modalBody: {
+    maxHeight: 400,
+    padding: 24,
+  },
+  detailSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 16,
+  },
+  detailGrid: {
+    gap: 16,
+  },
+  detailItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
   },
   detailLabel: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#6B7280',
   },
   detailValue: {
     fontSize: 14,
+    fontWeight: '600',
     color: '#1F2937',
+  },
+  financialCard: {
+    backgroundColor: '#F5F3FF',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E9D5FF',
+  },
+  financialRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  financialLabel: {
+    fontSize: 14,
+    color: '#6B7280',
     fontWeight: '500',
   },
-  detailValueHighlight: {
-    fontSize: 16,
+  financialValue: {
+    fontSize: 20,
+    fontWeight: '700',
     color: '#4F46E5',
-    fontWeight: '600',
   },
-  stockContainer: {
+  modalFooter: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    padding: 20,
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
   },
-  stockValue: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  productActions: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 8,
-  },
-  actionButton: {
+  actionButtonPrimary: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    backgroundColor: '#EEF2FF',
-    paddingVertical: 10,
-    borderRadius: 8,
+    gap: 8,
+    backgroundColor: '#4F46E5',
+    paddingVertical: 12,
+    borderRadius: 10,
+  },
+  actionButtonPrimaryText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#fff',
   },
   actionButtonSecondary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
     backgroundColor: '#F9FAFB',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
-  actionButtonText: {
-    fontSize: 14,
-    color: '#4F46E5',
+  actionButtonSecondaryText: {
+    fontSize: 15,
     fontWeight: '600',
-  },
-  actionButtonTextSecondary: {
-    color: '#6B7280',
+    color: '#4F46E5',
   },
 });
