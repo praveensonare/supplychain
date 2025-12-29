@@ -20,22 +20,19 @@ export default function ManufacturerLayout() {
   const showSidebar = pathname !== '/mfr/profile';
 
   const getPageTitle = () => {
-    if (pathname === '/mfr') return 'Manufacturer Dashboard';
+    if (pathname === '/mfr') return 'Dashboard';
     if (pathname === '/mfr/inv') return 'Inventory Management';
     if (pathname === '/mfr/orders') return 'Orders';
     if (pathname === '/mfr/revenue') return 'Revenue & Analytics';
     if (pathname === '/mfr/profile') return 'Profile';
-    return 'Manufacturer Dashboard';
+    return 'Dashboard';
   };
 
   return (
     <View style={styles.container}>
       {showSidebar && (
         <>
-          <DashboardHeader
-            title={getPageTitle()}
-            subtitle={user ? `Welcome, ${user.name}` : ''}
-          />
+          <DashboardHeader title={getPageTitle()} />
           <View style={styles.content}>
             <Sidebar items={sidebarItems} role="manufacturer" />
             <View style={styles.main}>

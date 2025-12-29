@@ -20,22 +20,19 @@ export default function SellerLayout() {
   const showSidebar = pathname !== '/slr/profile';
 
   const getPageTitle = () => {
-    if (pathname === '/slr') return 'Seller Dashboard';
+    if (pathname === '/slr') return 'Dashboard';
     if (pathname === '/slr/inv') return 'Inventory Management';
     if (pathname === '/slr/orders') return 'Orders';
     if (pathname === '/slr/revenue') return 'Revenue & Analytics';
     if (pathname === '/slr/profile') return 'Profile';
-    return 'Seller Dashboard';
+    return 'Dashboard';
   };
 
   return (
     <View style={styles.container}>
       {showSidebar && (
         <>
-          <DashboardHeader
-            title={getPageTitle()}
-            subtitle={user ? `Welcome, ${user.name}` : ''}
-          />
+          <DashboardHeader title={getPageTitle()} />
           <View style={styles.content}>
             <Sidebar items={sidebarItems} role="seller" />
             <View style={styles.main}>

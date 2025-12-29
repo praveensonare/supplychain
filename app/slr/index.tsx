@@ -9,9 +9,8 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '@/contexts/AuthContext';
-import { DashboardHeader } from '@/components/DashboardHeader';
+import { StatCard } from '@/components/StatCard';
 import { batteries, orders } from '@/utils/dummyData';
 
 export default function SellerDashboard() {
@@ -40,38 +39,24 @@ export default function SellerDashboard() {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Stats Cards */}
         <View style={styles.statsContainer}>
-          <LinearGradient
+          <StatCard
+            icon="cart"
+            value={totalOrders}
+            label="Total Orders"
             colors={['#4F46E5', '#6366F1']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="cart" size={28} color="#fff" />
-            <Text style={styles.statValue}>{totalOrders}</Text>
-            <Text style={styles.statLabel}>Total Orders</Text>
-          </LinearGradient>
-
-          <LinearGradient
+          />
+          <StatCard
+            icon="time"
+            value={activeOrders}
+            label="Active Orders"
             colors={['#10B981', '#34D399']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="time" size={28} color="#fff" />
-            <Text style={styles.statValue}>{activeOrders}</Text>
-            <Text style={styles.statLabel}>Active Orders</Text>
-          </LinearGradient>
-
-          <LinearGradient
+          />
+          <StatCard
+            icon="cash"
+            value={`$${(totalRevenue / 1000).toFixed(1)}K`}
+            label="Revenue"
             colors={['#EC4899', '#F472B6']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="cash" size={28} color="#fff" />
-            <Text style={styles.statValue}>${(totalRevenue / 1000).toFixed(1)}K</Text>
-            <Text style={styles.statLabel}>Revenue</Text>
-          </LinearGradient>
+          />
         </View>
 
         {/* Recent Orders */}
@@ -191,36 +176,9 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     padding: 20,
     gap: 12,
-  },
-  statCard: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 16,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginTop: 8,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginTop: 4,
   },
   section: {
     paddingHorizontal: 20,
