@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
     paddingTop: 60,
     paddingBottom: 40,
@@ -311,6 +312,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 24,
     padding: 24,
+    width: '100%',
+    maxWidth: 440,
+    alignSelf: 'center',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -320,6 +324,9 @@ const styles = StyleSheet.create({
       },
       android: {
         elevation: 8,
+      },
+      web: {
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
       },
     }),
   },

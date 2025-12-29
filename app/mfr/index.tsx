@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,20 +9,26 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '@/contexts/AuthContext';
-import { DashboardHeader } from '@/components/DashboardHeader';
+import { StatCard } from '@/components/StatCard';
 import { batteries, orders } from '@/utils/dummyData';
 
 export default function ManufacturerDashboard() {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'manufacturer') {
-      router.replace('/');
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && (!isAuthenticated || user?.role !== 'manufacturer')) {
+      setTimeout(() => {
+        router.replace('/');
+      }, 0);
     }
-  }, [isAuthenticated, user, router]);
+  }, [isMounted, isAuthenticated, user, router]);
 
   if (!user) return null;
 
@@ -32,60 +38,33 @@ export default function ManufacturerDashboard() {
   const totalInventoryValue = batteries.reduce((sum, b) => sum + (b.price * b.stock), 0);
 
   return (
-    <View style={styles.container}>
-      <DashboardHeader
-        title="Manufacturer Dashboard"
-        subtitle={`Welcome, ${user.name}`}
-      />
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Stats Cards */}
         <View style={styles.statsRow}>
-          <LinearGradient
+          <StatCard
+            icon="cube"
+            value={totalProduction}
+            label="Total Units"
             colors={['#8B5CF6', '#A78BFA']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="cube" size={28} color="#fff" />
-            <Text style={styles.statValue}>{totalProduction}</Text>
-            <Text style={styles.statLabel}>Total Units</Text>
-          </LinearGradient>
-
-          <LinearGradient
+          />
+          <StatCard
+            icon="layers"
+            value={activeProducts}
+            label="Active Products"
             colors={['#EC4899', '#F472B6']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="layers" size={28} color="#fff" />
-            <Text style={styles.statValue}>{activeProducts}</Text>
-            <Text style={styles.statLabel}>Active Products</Text>
-          </LinearGradient>
-        </View>
-
-        <View style={styles.statsRow}>
-          <LinearGradient
+          />
+          <StatCard
+            icon="hourglass"
+            value={pendingOrders}
+            label="Pending Orders"
             colors={['#F59E0B', '#FBBF24']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="hourglass" size={28} color="#fff" />
-            <Text style={styles.statValue}>{pendingOrders}</Text>
-            <Text style={styles.statLabel}>Pending Orders</Text>
-          </LinearGradient>
-
-          <LinearGradient
+          />
+          <StatCard
+            icon="trending-up"
+            value={`$${(totalInventoryValue / 1000).toFixed(0)}K`}
+            label="Inventory Value"
             colors={['#10B981', '#34D399']}
-            style={styles.statCard}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Ionicons name="trending-up" size={28} color="#fff" />
-            <Text style={styles.statValue}>${(totalInventoryValue / 1000).toFixed(0)}K</Text>
-            <Text style={styles.statLabel}>Inventory Value</Text>
-          </LinearGradient>
+          />
         </View>
 
         {/* Production Inventory */}
@@ -203,8 +182,7 @@ export default function ManufacturerDashboard() {
             </View>
           ))}
         </View>
-      </ScrollView>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -269,42 +247,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9FAFB',
   },
-  content: {
-    flex: 1,
-  },
   statsRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     paddingHorizontal: 20,
     paddingTop: 20,
     gap: 12,
-  },
-  statCard: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 16,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginTop: 8,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginTop: 4,
   },
   section: {
     paddingHorizontal: 20,
