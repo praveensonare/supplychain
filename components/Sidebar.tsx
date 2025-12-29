@@ -34,6 +34,7 @@ export function Sidebar({ items, role }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(!IS_MOBILE);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleNavigation = (path: string) => {
@@ -88,44 +89,59 @@ export function Sidebar({ items, role }: SidebarProps) {
     <View style={styles.sidebarContent}>
       {/* Logo Section */}
       <View style={styles.logoSection}>
-        <View style={styles.logoContainer}>
-          <View style={styles.logoIcon}>
-            <Ionicons name="battery-charging" size={32} color="#4F46E5" />
+        {!isCollapsed ? (
+          <View style={styles.logoContainer}>
+            <Image
+              source={{ uri: 'https://via.placeholder.com/48x48/4F46E5/FFFFFF?text=Logo' }}
+              style={styles.logoImage}
+            />
+            <View style={styles.logoTextContainer}>
+              <Text style={styles.companyName}>{user?.company}</Text>
+            </View>
           </View>
-          <View style={styles.logoTextContainer}>
-            <Text style={styles.logoTitle}>Battery Supply</Text>
-            <Text style={styles.logoSubtitle}>Chain Platform</Text>
+        ) : (
+          <View style={styles.logoContainerCollapsed}>
+            <Image
+              source={{ uri: 'https://via.placeholder.com/40x40/4F46E5/FFFFFF?text=L' }}
+              style={styles.logoImageCollapsed}
+            />
           </View>
-        </View>
-        {IS_MOBILE && (
+        )}
+        {IS_MOBILE && !isCollapsed && (
           <TouchableOpacity onPress={toggleSidebar} style={styles.closeBtnMobile}>
             <Ionicons name="close" size={24} color="#6B7280" />
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Company Info Badge */}
-      <View style={styles.companyBadge}>
-        <View style={styles.companyBadgeIcon}>
+      {/* Collapse Toggle Button - Desktop Only */}
+      {!IS_MOBILE && (
+        <TouchableOpacity
+          style={styles.collapseToggle}
+          onPress={() => setIsCollapsed(!isCollapsed)}
+        >
           <Ionicons
-            name={role === 'manufacturer' ? 'business' : role === 'seller' ? 'storefront' : 'cube'}
-            size={16}
-            color="#4F46E5"
+            name={isCollapsed ? 'chevron-forward' : 'chevron-back'}
+            size={20}
+            color="#6B7280"
           />
-        </View>
-        <Text style={styles.companyName}>{user?.company}</Text>
-      </View>
+        </TouchableOpacity>
+      )}
 
       {/* Navigation Items */}
       <View style={styles.navigationSection}>
-        <Text style={styles.navigationLabel}>Navigation</Text>
+        {!isCollapsed && <Text style={styles.navigationLabel}>Navigation</Text>}
         <View style={styles.navItems}>
           {items.map((item) => {
             const active = isActive(item.path);
             return (
               <TouchableOpacity
                 key={item.id}
-                style={[styles.navItem, active && styles.navItemActive]}
+                style={[
+                  styles.navItem,
+                  active && styles.navItemActive,
+                  isCollapsed && styles.navItemCollapsed
+                ]}
                 onPress={() => handleNavigation(item.path)}
                 activeOpacity={0.7}
               >
@@ -136,14 +152,16 @@ export function Sidebar({ items, role }: SidebarProps) {
                     color={active ? '#4F46E5' : '#6B7280'}
                   />
                 </View>
-                <View style={styles.navItemContent}>
-                  <Text style={[styles.navItemText, active && styles.navItemTextActive]}>
-                    {item.label}
-                  </Text>
-                  {item.description && (
-                    <Text style={styles.navItemDescription}>{item.description}</Text>
-                  )}
-                </View>
+                {!isCollapsed && (
+                  <View style={styles.navItemContent}>
+                    <Text style={[styles.navItemText, active && styles.navItemTextActive]}>
+                      {item.label}
+                    </Text>
+                    {item.description && (
+                      <Text style={styles.navItemDescription}>{item.description}</Text>
+                    )}
+                  </View>
+                )}
                 {active && <View style={styles.navItemActiveIndicator} />}
               </TouchableOpacity>
             );
@@ -157,7 +175,7 @@ export function Sidebar({ items, role }: SidebarProps) {
       {/* Profile Section */}
       <View style={styles.profileSection}>
         <TouchableOpacity
-          style={styles.profileButton}
+          style={[styles.profileButton, isCollapsed && styles.profileButtonCollapsed]}
           onPress={() => setShowProfileMenu(true)}
           activeOpacity={0.8}
         >
@@ -165,15 +183,19 @@ export function Sidebar({ items, role }: SidebarProps) {
             source={{ uri: user?.profilePicture }}
             style={styles.profileImage}
           />
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName} numberOfLines={1}>
-              {user?.name}
-            </Text>
-            <Text style={styles.profileEmail} numberOfLines={1}>
-              {user?.email}
-            </Text>
-          </View>
-          <Ionicons name="ellipsis-vertical" size={20} color="#9CA3AF" />
+          {!isCollapsed && (
+            <>
+              <View style={styles.profileInfo}>
+                <Text style={styles.profileName} numberOfLines={1}>
+                  {user?.name}
+                </Text>
+                <Text style={styles.profileEmail} numberOfLines={1}>
+                  {user?.email}
+                </Text>
+              </View>
+              <Ionicons name="ellipsis-vertical" size={20} color="#9CA3AF" />
+            </>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -204,7 +226,7 @@ export function Sidebar({ items, role }: SidebarProps) {
           </View>
         </Modal>
       ) : (
-        <View style={styles.desktopSidebar}>
+        <View style={[styles.desktopSidebar, isCollapsed && styles.desktopSidebarCollapsed]}>
           <SidebarContent />
         </View>
       )}
@@ -345,8 +367,12 @@ const styles = StyleSheet.create({
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
+        transition: 'width 0.3s ease',
       },
     }),
+  },
+  desktopSidebarCollapsed: {
+    width: 80,
   },
 
   // Sidebar Content
@@ -371,57 +397,46 @@ const styles = StyleSheet.create({
     gap: 12,
     flex: 1,
   },
-  logoIcon: {
+  logoImage: {
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: '#EEF2FF',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   logoTextContainer: {
     flex: 1,
   },
-  logoTitle: {
-    fontSize: 16,
+  logoContainerCollapsed: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoImageCollapsed: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+  },
+
+  // Company Name
+  companyName: {
+    fontSize: 15,
     fontWeight: '700',
     color: '#1F2937',
     letterSpacing: -0.3,
   },
-  logoSubtitle: {
-    fontSize: 11,
-    color: '#6B7280',
-    marginTop: 2,
-  },
 
-  // Company Badge
-  companyBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 20,
-    marginTop: 16,
+  // Collapse Toggle Button
+  collapseToggle: {
+    alignSelf: 'flex-end',
+    marginRight: 12,
+    marginTop: 8,
     marginBottom: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    backgroundColor: '#F9FAFB',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    gap: 8,
-  },
-  companyBadgeIcon: {
-    width: 28,
-    height: 28,
+    padding: 8,
     borderRadius: 6,
-    backgroundColor: '#EEF2FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  companyName: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#374151',
-    flex: 1,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+        transition: 'background-color 0.2s ease',
+      },
+    }),
   },
 
   // Navigation Section
@@ -458,6 +473,10 @@ const styles = StyleSheet.create({
   },
   navItemActive: {
     backgroundColor: '#F5F3FF',
+  },
+  navItemCollapsed: {
+    justifyContent: 'center',
+    paddingHorizontal: 12,
   },
   navItemIconContainer: {
     width: 36,
@@ -523,6 +542,10 @@ const styles = StyleSheet.create({
         transition: 'all 0.2s ease',
       },
     }),
+  },
+  profileButtonCollapsed: {
+    justifyContent: 'center',
+    padding: 8,
   },
   profileImage: {
     width: 40,
