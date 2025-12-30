@@ -23,7 +23,7 @@ export function PieChartCard({ title, data }: PieChartCardProps) {
   };
 
   const screenWidth = Dimensions.get('window').width;
-  const chartWidth = Math.min(screenWidth - 80, 280);
+  const chartWidth = Math.min(screenWidth - 40, 320);
 
   return (
     <View style={styles.card}>
@@ -33,12 +33,13 @@ export function PieChartCard({ title, data }: PieChartCardProps) {
         <PieChart
           data={data}
           width={chartWidth}
-          height={200}
+          height={220}
           chartConfig={chartConfig}
           accessor="value"
           backgroundColor="transparent"
-          paddingLeft="0"
+          paddingLeft="15"
           absolute
+          hasLegend={false}
         />
       </View>
 
@@ -97,7 +98,10 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
+    marginHorizontal: -10,
+    overflow: 'visible',
   },
   legendContainer: {
     gap: 8,
