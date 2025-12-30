@@ -13,9 +13,11 @@ interface PieChartData {
 interface PieChartCardProps {
   title: string;
   data: PieChartData[];
+  total?: number;
+  totalLabel?: string;
 }
 
-export function PieChartCard({ title, data }: PieChartCardProps) {
+export function PieChartCard({ title, data, total, totalLabel = 'Total Inventory' }: PieChartCardProps) {
   const [selectedSlice, setSelectedSlice] = useState<number | null>(null);
 
   const chartConfig = {
@@ -28,6 +30,14 @@ export function PieChartCard({ title, data }: PieChartCardProps) {
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>
+
+      {/* Total Inventory Display */}
+      {total !== undefined && (
+        <View style={styles.totalContainer}>
+          <Text style={styles.totalLabel}>{totalLabel}</Text>
+          <Text style={styles.totalValue}>{total.toLocaleString()}</Text>
+        </View>
+      )}
 
       <View style={styles.chartContainer}>
         <PieChart
@@ -94,7 +104,30 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
     color: '#1F2937',
-    marginBottom: 20,
+    marginBottom: 16,
+  },
+  totalContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#F5F3FF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E9D5FF',
+  },
+  totalLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#6B7280',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  totalValue: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#4F46E5',
   },
   chartContainer: {
     alignItems: 'center',

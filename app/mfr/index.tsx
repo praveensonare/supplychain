@@ -167,6 +167,8 @@ export default function ManufacturerDashboard() {
               <PieChartCard
                 title="Inventory by Status"
                 data={inventoryStatusData}
+                total={totalProduction}
+                totalLabel="Total Inventory"
               />
             </View>
 
@@ -175,6 +177,8 @@ export default function ManufacturerDashboard() {
               <PieChartCard
                 title="Inventory by Battery Type"
                 data={batteryTypeData}
+                total={totalProduction}
+                totalLabel="Total Inventory"
               />
             </View>
 
@@ -183,6 +187,8 @@ export default function ManufacturerDashboard() {
               <PieChartCard
                 title="Inventory by Location"
                 data={locationData}
+                total={totalProduction}
+                totalLabel="Total Inventory"
               />
             </View>
           </View>
