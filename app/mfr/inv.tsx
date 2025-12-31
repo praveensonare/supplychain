@@ -27,16 +27,30 @@ interface Battery {
 export default function ManufacturerInventory() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBattery, setSelectedBattery] = useState<Battery | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [locationFilter, setLocationFilter] = useState<string>('all');
 
   const totalStock = batteries.reduce((sum, b) => sum + b.stock, 0);
   const lowStockItems = batteries.filter(b => b.status === 'low_stock').length;
   const outOfStockItems = batteries.filter(b => b.status === 'out_of_stock').length;
   const totalValue = batteries.reduce((sum, b) => sum + (b.price * b.stock), 0);
 
-  const filteredBatteries = batteries.filter(b =>
-    b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    b.type.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Add location and contact to batteries
+  const locations = ['Mumbai', 'Bangalore', 'Delhi', 'Chennai', 'Pune'];
+  const batteriesWithLocation = batteries.map((b, index) => ({
+    ...b,
+    location: locations[index % locations.length],
+    contact: `+91 ${9000000000 + index * 111111}`,
+  }));
+
+  const filteredBatteries = batteriesWithLocation.filter(b => {
+    const matchesSearch = b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      b.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      b.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || b.status === statusFilter;
+    const matchesLocation = locationFilter === 'all' || b.location === locationFilter;
+    return matchesSearch && matchesStatus && matchesLocation;
+  });
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -68,16 +82,67 @@ export default function ManufacturerInventory() {
         />
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#6B7280" />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search inventory..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholderTextColor="#9CA3AF"
-        />
+      {/* Search and Filters */}
+      <View style={styles.filtersSection}>
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color="#6B7280" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by name, type, or location..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholderTextColor="#9CA3AF"
+          />
+        </View>
+
+        <View style={styles.filterRow}>
+          {/* Status Filter */}
+          <View style={styles.filterGroup}>
+            <Text style={styles.filterLabel}>Status:</Text>
+            <View style={styles.filterButtons}>
+              <TouchableOpacity
+                style={[styles.filterButton, statusFilter === 'all' && styles.filterButtonActive]}
+                onPress={() => setStatusFilter('all')}
+              >
+                <Text style={[styles.filterButtonText, statusFilter === 'all' && styles.filterButtonTextActive]}>All</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.filterButton, statusFilter === 'available' && styles.filterButtonActive]}
+                onPress={() => setStatusFilter('available')}
+              >
+                <Text style={[styles.filterButtonText, statusFilter === 'available' && styles.filterButtonTextActive]}>Available</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.filterButton, statusFilter === 'low_stock' && styles.filterButtonActive]}
+                onPress={() => setStatusFilter('low_stock')}
+              >
+                <Text style={[styles.filterButtonText, statusFilter === 'low_stock' && styles.filterButtonTextActive]}>Low Stock</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Location Filter */}
+          <View style={styles.filterGroup}>
+            <Text style={styles.filterLabel}>Location:</Text>
+            <View style={styles.filterButtons}>
+              <TouchableOpacity
+                style={[styles.filterButton, locationFilter === 'all' && styles.filterButtonActive]}
+                onPress={() => setLocationFilter('all')}
+              >
+                <Text style={[styles.filterButtonText, locationFilter === 'all' && styles.filterButtonTextActive]}>All</Text>
+              </TouchableOpacity>
+              {locations.slice(0, 3).map((loc) => (
+                <TouchableOpacity
+                  key={loc}
+                  style={[styles.filterButton, locationFilter === loc && styles.filterButtonActive]}
+                  onPress={() => setLocationFilter(loc)}
+                >
+                  <Text style={[styles.filterButtonText, locationFilter === loc && styles.filterButtonTextActive]}>{loc}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
       </View>
 
       {/* Inventory List */}
@@ -91,8 +156,10 @@ export default function ManufacturerInventory() {
           <Text style={[styles.tableHeaderText, styles.col1]}>Product</Text>
           <Text style={[styles.tableHeaderText, styles.col2]}>Stock</Text>
           <Text style={[styles.tableHeaderText, styles.col3]}>Status</Text>
-          <Text style={[styles.tableHeaderText, styles.col4]}>Price</Text>
-          <Text style={[styles.tableHeaderText, styles.col5]}>Actions</Text>
+          <Text style={[styles.tableHeaderText, styles.col4]}>Location</Text>
+          <Text style={[styles.tableHeaderText, styles.col5]}>Contact</Text>
+          <Text style={[styles.tableHeaderText, styles.col6]}>Price</Text>
+          <Text style={[styles.tableHeaderText, styles.col7]}>Actions</Text>
         </View>
 
         {/* Table Body */}
@@ -128,10 +195,21 @@ export default function ManufacturerInventory() {
             </View>
 
             <View style={styles.col4}>
-              <Text style={styles.priceText}>${battery.price}</Text>
+              <View style={styles.locationContainer}>
+                <Ionicons name="location" size={14} color="#6B7280" />
+                <Text style={styles.locationText}>{battery.location}</Text>
+              </View>
             </View>
 
             <View style={styles.col5}>
+              <Text style={styles.contactText}>{battery.contact}</Text>
+            </View>
+
+            <View style={styles.col6}>
+              <Text style={styles.priceText}>${battery.price}</Text>
+            </View>
+
+            <View style={styles.col7}>
               <TouchableOpacity
                 style={styles.detailsButton}
                 onPress={() => setSelectedBattery(battery)}
@@ -340,12 +418,15 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 12,
   },
+  filtersSection: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    marginHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 12,
@@ -357,6 +438,47 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#1F2937',
+  },
+  filterRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+  },
+  filterGroup: {
+    flex: 1,
+    minWidth: 200,
+  },
+  filterLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  filterButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  filterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  filterButtonActive: {
+    backgroundColor: '#EEF2FF',
+    borderColor: '#4F46E5',
+  },
+  filterButtonText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  filterButtonTextActive: {
+    color: '#4F46E5',
+    fontWeight: '600',
   },
   listContainer: {
     marginHorizontal: 20,
@@ -411,22 +533,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    minWidth: 150,
   },
   col2: {
-    flex: 1,
+    flex: 0.8,
     alignItems: 'center',
+    minWidth: 80,
   },
   col3: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 100,
   },
   col4: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 100,
   },
   col5: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 120,
+  },
+  col6: {
+    flex: 0.8,
+    alignItems: 'center',
+    minWidth: 80,
+  },
+  col7: {
+    flex: 1,
+    alignItems: 'center',
+    minWidth: 100,
   },
   productIconSmall: {
     width: 40,
@@ -474,6 +611,21 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  locationText: {
+    fontSize: 13,
+    color: '#374151',
+    fontWeight: '500',
+  },
+  contactText: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '500',
   },
   priceText: {
     fontSize: 15,

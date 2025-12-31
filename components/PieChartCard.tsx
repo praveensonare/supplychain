@@ -31,26 +31,29 @@ export function PieChartCard({ title, data, total, totalLabel = 'Total Inventory
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>
 
-      {/* Total Inventory Display */}
-      {total !== undefined && (
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalLabel}>{totalLabel}</Text>
-          <Text style={styles.totalValue}>{total.toLocaleString()}</Text>
+      <View style={styles.contentContainer}>
+        {/* Pie Chart - Center */}
+        <View style={styles.chartContainer}>
+          <PieChart
+            data={data}
+            width={chartWidth}
+            height={220}
+            chartConfig={chartConfig}
+            accessor="value"
+            backgroundColor="transparent"
+            paddingLeft="15"
+            absolute
+            hasLegend={false}
+          />
         </View>
-      )}
 
-      <View style={styles.chartContainer}>
-        <PieChart
-          data={data}
-          width={chartWidth}
-          height={220}
-          chartConfig={chartConfig}
-          accessor="value"
-          backgroundColor="transparent"
-          paddingLeft="15"
-          absolute
-          hasLegend={false}
-        />
+        {/* Total Inventory Display - Inline */}
+        {total !== undefined && (
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>{totalLabel}</Text>
+            <Text style={styles.totalValue}>{total.toLocaleString()}</Text>
+          </View>
+        )}
       </View>
 
       {/* Legend with hover effect */}
@@ -105,36 +108,45 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1F2937',
     marginBottom: 16,
+    textAlign: 'center',
+  },
+  contentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    flexWrap: 'wrap',
+    gap: 16,
+  },
+  chartContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 200,
+    overflow: 'visible',
   },
   totalContainer: {
     alignItems: 'center',
-    marginBottom: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     backgroundColor: '#F5F3FF',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E9D5FF',
+    minWidth: 140,
   },
   totalLabel: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 11,
+    fontWeight: '600',
     color: '#6B7280',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-    marginBottom: 4,
+    marginBottom: 8,
   },
   totalValue: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: '700',
     color: '#4F46E5',
-  },
-  chartContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    marginHorizontal: -10,
-    overflow: 'visible',
   },
   legendContainer: {
     gap: 8,

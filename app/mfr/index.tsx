@@ -397,16 +397,17 @@ const styles = StyleSheet.create({
     gap: 20,
     ...Platform.select({
       web: {
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
       },
     }),
   },
   chartCard: {
-    flex: 1,
+    width: '100%',
     minWidth: 300,
     ...Platform.select({
       web: {
-        maxWidth: '48%',
+        width: 'calc(50% - 10px)',
+        maxWidth: 'calc(50% - 10px)',
       },
     }),
   },
