@@ -32,7 +32,15 @@ export function PieChartCard({ title, data, total, totalLabel = 'Total Inventory
       <Text style={styles.title}>{title}</Text>
 
       <View style={styles.contentContainer}>
-        {/* Pie Chart - Center */}
+        {/* Total Inventory Display - Above Chart */}
+        {total !== undefined && (
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>{totalLabel}</Text>
+            <Text style={styles.totalValue}>{total.toLocaleString()}</Text>
+          </View>
+        )}
+
+        {/* Pie Chart - Centered */}
         <View style={styles.chartContainer}>
           <PieChart
             data={data}
@@ -46,14 +54,6 @@ export function PieChartCard({ title, data, total, totalLabel = 'Total Inventory
             hasLegend={false}
           />
         </View>
-
-        {/* Total Inventory Display - Inline */}
-        {total !== undefined && (
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>{totalLabel}</Text>
-            <Text style={styles.totalValue}>{total.toLocaleString()}</Text>
-          </View>
-        )}
       </View>
 
       {/* Legend with hover effect */}
@@ -102,6 +102,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: '#E5E7EB',
+    minHeight: 600,
+    display: 'flex' as any,
+    flexDirection: 'column',
   },
   title: {
     fontSize: 17,
@@ -111,29 +114,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   contentContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: 20,
-    flexWrap: 'wrap',
-    gap: 16,
   },
   chartContainer: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 200,
+    marginVertical: 16,
     overflow: 'visible',
   },
   totalContainer: {
     alignItems: 'center',
+    alignSelf: 'center',
     paddingVertical: 16,
     paddingHorizontal: 20,
     backgroundColor: '#F5F3FF',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E9D5FF',
-    minWidth: 140,
+    marginBottom: 8,
   },
   totalLabel: {
     fontSize: 11,

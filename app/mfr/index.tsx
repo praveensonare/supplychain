@@ -406,8 +406,8 @@ const styles = StyleSheet.create({
     minWidth: 300,
     ...Platform.select({
       web: {
-        width: 'calc(50% - 10px)',
-        maxWidth: 'calc(50% - 10px)',
+        width: 'calc(50% - 10px)' as any,
+        maxWidth: 'calc(50% - 10px)' as any,
       },
     }),
   },
