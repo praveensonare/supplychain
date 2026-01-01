@@ -25,7 +25,7 @@ export function PieChartCard({ title, data, total, totalLabel = 'Total Inventory
   };
 
   const screenWidth = Dimensions.get('window').width;
-  const chartWidth = Math.min(screenWidth - 40, 240);
+  const chartWidth = Math.min(screenWidth - 40, 180);
 
   return (
     <View style={styles.card}>
@@ -45,11 +45,11 @@ export function PieChartCard({ title, data, total, totalLabel = 'Total Inventory
         <PieChart
           data={data}
           width={chartWidth}
-          height={220}
+          height={160}
           chartConfig={chartConfig}
           accessor="value"
           backgroundColor="transparent"
-          paddingLeft="15"
+          paddingLeft="10"
           absolute
           hasLegend={false}
         />
@@ -96,12 +96,12 @@ export function PieChartCard({ title, data, total, totalLabel = 'Total Inventory
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
     borderWidth: 1,
     borderColor: '#E5E7EB',
-    minHeight: 550,
+    minHeight: 400,
     display: 'flex' as any,
     flexDirection: 'column',
   },
@@ -109,53 +109,53 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
     flexWrap: 'wrap',
-    gap: 12,
+    gap: 8,
   },
   title: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: '700',
     color: '#1F2937',
     flex: 1,
-    minWidth: 150,
+    minWidth: 120,
   },
   chartContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 16,
+    marginVertical: 8,
     overflow: 'visible',
   },
   totalContainer: {
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     backgroundColor: '#F5F3FF',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#E9D5FF',
   },
   totalLabel: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '600',
     color: '#6B7280',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   totalValue: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '700',
     color: '#4F46E5',
   },
   legendContainer: {
-    gap: 8,
+    gap: 6,
   },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    borderRadius: 8,
+    padding: 8,
+    borderRadius: 6,
     backgroundColor: '#F9FAFB',
   },
   legendItemSelected: {
@@ -164,10 +164,10 @@ const styles = StyleSheet.create({
     borderColor: '#4F46E5',
   },
   legendColor: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 12,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
   },
   legendTextContainer: {
     flex: 1,
@@ -176,48 +176,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   legendName: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     color: '#374151',
   },
   legendValue: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: '#1F2937',
   },
   detailsCard: {
-    marginTop: 16,
-    padding: 16,
+    marginTop: 12,
+    padding: 12,
     backgroundColor: '#F5F3FF',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#E9D5FF',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   detailsIndicator: {
-    width: 4,
-    height: 40,
+    width: 3,
+    height: 30,
     borderRadius: 2,
   },
   detailsContent: {
     flex: 1,
   },
   detailsName: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '600',
     color: '#1F2937',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   detailsValue: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '700',
     color: '#4F46E5',
     marginBottom: 2,
   },
   detailsPercentage: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#6B7280',
   },
 });

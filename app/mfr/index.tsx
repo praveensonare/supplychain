@@ -403,11 +403,11 @@ const styles = StyleSheet.create({
   },
   chartCard: {
     width: '100%',
-    minWidth: 300,
+    minWidth: 280,
     ...Platform.select({
       web: {
-        width: 'calc(50% - 10px)' as any,
-        maxWidth: 'calc(50% - 10px)' as any,
+        width: 'calc(33.33% - 14px)' as any,
+        maxWidth: 'calc(33.33% - 14px)' as any,
       },
     }),
   },
