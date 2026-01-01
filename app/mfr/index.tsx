@@ -394,20 +394,19 @@ const styles = StyleSheet.create({
   chartsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 20,
+    gap: 24,
     ...Platform.select({
       web: {
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
       },
     }),
   },
   chartCard: {
     width: '100%',
-    minWidth: 280,
     ...Platform.select({
       web: {
-        width: 'calc(33.33% - 14px)' as any,
-        maxWidth: 'calc(33.33% - 14px)' as any,
+        width: 'calc(50% - 12px)' as any,
+        maxWidth: 'calc(50% - 12px)' as any,
       },
     }),
   },
