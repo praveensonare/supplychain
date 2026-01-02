@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   chartsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 24,
+    gap: 20,
     ...Platform.select({
       web: {
         justifyContent: 'space-between',
@@ -405,8 +405,9 @@ const styles = StyleSheet.create({
     width: '100%',
     ...Platform.select({
       web: {
-        width: 'calc(50% - 12px)' as any,
-        maxWidth: 'calc(50% - 12px)' as any,
+        width: 'calc(33.33% - 14px)' as any,
+        maxWidth: 'calc(33.33% - 14px)' as any,
+        minWidth: 320,
       },
     }),
   },
