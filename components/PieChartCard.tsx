@@ -26,7 +26,7 @@ export function PieChartCard({ title, data, total, totalLabel = 'Total' }: PieCh
   };
 
   const screenWidth = Dimensions.get('window').width;
-  const chartWidth = Math.min(screenWidth - 60, 220);
+  const chartWidth = Math.min(screenWidth - 40, 240);
 
   const handleSlicePress = (index: number) => {
     const isAlreadySelected = selectedSlice === index;
@@ -65,13 +65,14 @@ export function PieChartCard({ title, data, total, totalLabel = 'Total' }: PieCh
         <PieChart
           data={data}
           width={chartWidth}
-          height={220}
+          height={200}
           chartConfig={chartConfig}
           accessor="value"
           backgroundColor="transparent"
-          paddingLeft="20"
+          paddingLeft="30"
           absolute
           hasLegend={false}
+          style={{ zIndex: 10 }}
         />
       </Animated.View>
 
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
     marginBottom: 20,
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
     flexWrap: 'wrap',
     gap: 8,
   },
@@ -159,14 +160,16 @@ const styles = StyleSheet.create({
   chartWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 20,
+    marginVertical: 8,
     overflow: 'visible',
+    zIndex: 10,
+    position: 'relative' as any,
   },
   legendContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginTop: 16,
+    marginTop: 8,
   },
   legendItem: {
     flexDirection: 'row',

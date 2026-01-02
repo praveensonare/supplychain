@@ -165,30 +165,30 @@ export default function ManufacturerDashboard() {
             {/* Pie Chart 1: Inventory Status */}
             <View style={styles.chartCard}>
               <PieChartCard
-                title="Inventory by Status"
+                title="By Status"
                 data={inventoryStatusData}
                 total={totalProduction}
-                totalLabel="Total Inventory"
+                totalLabel="Total"
               />
             </View>
 
             {/* Pie Chart 2: Battery Types */}
             <View style={styles.chartCard}>
               <PieChartCard
-                title="Inventory by Battery Type"
+                title="By Battery Type"
                 data={batteryTypeData}
                 total={totalProduction}
-                totalLabel="Total Inventory"
+                totalLabel="Total"
               />
             </View>
 
             {/* Pie Chart 3: Location Distribution */}
             <View style={styles.chartCard}>
               <PieChartCard
-                title="Inventory by Location"
+                title="By Location"
                 data={locationData}
                 total={totalProduction}
-                totalLabel="Total Inventory"
+                totalLabel="Total"
               />
             </View>
           </View>
